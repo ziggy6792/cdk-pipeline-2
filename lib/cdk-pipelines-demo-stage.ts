@@ -1,9 +1,10 @@
+/* eslint-disable import/prefer-default-export */
 import { Construct, Stack, StackProps, Stage, StageProps } from '@aws-cdk/core';
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import { CdkPipeline } from '@aws-cdk/pipelines';
 
-import { CdkPipelinesStack } from './cdk-pipeline-2-stack';
 import * as cdk from '@aws-cdk/core';
+import { CdkPipelinesStack } from './cdk-pipeline-2-stack';
 
 export class MyApplication extends Stage {
   public readonly urlOutput: cdk.CfnOutput;

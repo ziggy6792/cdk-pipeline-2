@@ -1,8 +1,9 @@
+/* eslint-disable import/prefer-default-export */
 import { Stack, StackProps, Construct, SecretValue } from '@aws-cdk/core';
 import { CdkPipeline, SimpleSynthAction } from '@aws-cdk/pipelines';
 
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
-import * as codepipeline_actions from '@aws-cdk/aws-codepipeline-actions';
+import * as codepipelineActions from '@aws-cdk/aws-codepipeline-actions';
 
 export class CdkpipelinesDemoPipelineStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -11,15 +12,15 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
     const sourceArtifact = new codepipeline.Artifact();
     const cloudAssemblyArtifact = new codepipeline.Artifact();
 
-    const pipeline = new CdkPipeline(this, 'Pipeline', {
-      pipelineName: 'MyAppPipeline',
+    const pipeline = new CdkPipeline(this, 'CdkPipeline2', {
+      pipelineName: 'CdkPipeline2',
       cloudAssemblyArtifact,
 
-      sourceAction: new codepipeline_actions.GitHubSourceAction({
+      sourceAction: new codepipelineActions.GitHubSourceAction({
         actionName: 'GitHub',
         output: sourceArtifact,
         oauthToken: SecretValue.secretsManager('GITHUB_OATH_TOKEN', { jsonField: 'GITHUB_OATH_TOKEN' }),
-        trigger: codepipeline_actions.GitHubTrigger.POLL,
+        trigger: codepipelineActions.GitHubTrigger.POLL,
         // Replace these with your actual GitHub project info
         owner: 'ziggy6792',
         repo: 'cdk-pipeline-2',
