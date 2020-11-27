@@ -4,6 +4,7 @@ import { CdkPipeline, SimpleSynthAction } from '@aws-cdk/pipelines';
 
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import * as codepipelineActions from '@aws-cdk/aws-codepipeline-actions';
+import { ManualApprovalAction } from '@aws-cdk/aws-codepipeline-actions';
 import { CdkPipelinesDemoStage } from './cdk-pipelines-demo-stage';
 
 export class CdkpipelinesDemoPipelineStack extends Stack {
@@ -37,8 +38,30 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
       }),
     });
 
+    // Do this as many times as necessary with any account and region
+    // Account and region may be different from the pipeline's.
+    const devStage = pipeline.addApplicationStage(
+      new CdkPipelinesDemoStage(this, 'Dev', {
+        env: {
+          account: '694710432912',
+          region: 'ap-southeast-1',
+        },
+      })
+    );
+
+    // pipeline.
+
+    devStage.addActions(
+      new ManualApprovalAction({
+        actionName: 'ManualApproval',
+        runOrder: devStage.nextSequentialRunOrder(),
+      })
+    );
+
+    // Do this as many times as necessary with any account and region
+    // Account and region may be different from the pipeline's.
     pipeline.addApplicationStage(
-      new CdkPipelinesDemoStage(this, 'PreProd', {
+      new CdkPipelinesDemoStage(this, 'Prod', {
         env: {
           account: '694710432912',
           region: 'ap-southeast-1',
