@@ -6,7 +6,7 @@ import { CdkPipeline } from '@aws-cdk/pipelines';
 import * as cdk from '@aws-cdk/core';
 import { CdkPipelinesStack } from './cdk-pipeline-2-stack';
 
-export class MyApplication extends Stage {
+export class CdkPipelinesDemoStage extends Stage {
   public readonly urlOutput: cdk.CfnOutput;
 
   constructor(scope: Construct, id: string, props?: StageProps) {
