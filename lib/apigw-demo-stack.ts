@@ -19,17 +19,12 @@ class ApigwDemoStack extends cdk.Stack {
     });
 
     // IMPORTANT: Lambda grant invoke to APIGateway
-    handler.grantInvoke(new ServicePrincipal('apigateway.amazonaws.com'));
+    // handler.grantInvoke(new ServicePrincipal('apigateway.amazonaws.com'));
 
-    // const gw = new apigw.LambdaRestApi(this, 'Gateway', {
-    //   description: `Endpoint for lambda ${stageName}`,
-    //   handler,
-    // });
-
-    // Then, create the API construct, integrate with lambda
-    const api = new apigw.RestApi(this, `${id}_api_${stageName}`, { deploy: false });
-    const integration = new apigw.LambdaIntegration(handler);
-    api.root.addMethod('ANY', integration);
+    const api = new apigw.LambdaRestApi(this, `${id}-api-${stageName}`, {
+      description: `Endpoint for lambda ${stageName}`,
+      handler,
+    });
 
     // Then create an explicit Deployment construct
     const deployment = new apigw.Deployment(this, 'my_deployment', { api });
