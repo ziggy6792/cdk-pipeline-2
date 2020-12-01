@@ -18,18 +18,15 @@ class ApigwDemoStack extends cdk.Stack {
       environment: {},
     });
 
-    // IMPORTANT: Lambda grant invoke to APIGateway
-    handler.grantInvoke(new ServicePrincipal('apigateway.amazonaws.com'));
-
-    // const gw = new apigw.LambdaRestApi(this, 'Gateway', {
-    //   description: `Endpoint for lambda ${stageName}`,
-    //   handler,
-    // });
+    const api = new apigw.LambdaRestApi(this, 'Gateway', {
+      description: `Endpoint for lambda ${stageName}`,
+      handler,
+    });
 
     // Then, create the API construct, integrate with lambda
-    const api = new apigw.RestApi(this, 'my_api', { deploy: false });
-    const integration = new apigw.LambdaIntegration(handler);
-    api.root.addMethod('ANY', integration);
+    // const api = new apigw.RestApi(this, 'my_api', { deploy: false });
+    // const integration = new apigw.LambdaIntegration(handler);
+    // api.root.addMethod('ANY', integration);
 
     // Then create an explicit Deployment construct
     const deployment = new apigw.Deployment(this, 'my_deployment', { api });
@@ -38,7 +35,7 @@ class ApigwDemoStack extends cdk.Stack {
 
     api.deploymentStage = deployedStage;
 
-    this.urlOutput = new cdk.CfnOutput(this, `webservice-endpoint-${stageName}`, { value: api.url });
+    this.urlOutput = new cdk.CfnOutput(this, 'webservice-url', { description: 'webservice-url', value: api.url });
   }
 }
 
