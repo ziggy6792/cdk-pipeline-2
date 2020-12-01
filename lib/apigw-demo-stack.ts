@@ -27,7 +27,7 @@ class ApigwDemoStack extends cdk.Stack {
     // });
 
     // Then, create the API construct, integrate with lambda
-    const api = new apigw.RestApi(this, 'my_api', { deploy: false });
+    const api = new apigw.RestApi(this, `${id}-${stageName}`, { deploy: false });
     const integration = new apigw.LambdaIntegration(handler);
     api.root.addMethod('ANY', integration);
 
