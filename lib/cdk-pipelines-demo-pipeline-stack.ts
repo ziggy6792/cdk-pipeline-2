@@ -63,14 +63,13 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
 
     const devStage = pipeline.addApplicationStage(deployedDevStage);
 
-    // pipeline.
-
-    devStage.addActions(
-      new ManualApprovalAction({
-        actionName: 'ManualApproval',
-        runOrder: devStage.nextSequentialRunOrder(),
-      })
-    );
+    // ManualApproval
+    // devStage.addActions(
+    //   new ManualApprovalAction({
+    //     actionName: 'ManualApproval',
+    //     runOrder: devStage.nextSequentialRunOrder(),
+    //   })
+    // );
 
     // Do this as many times as necessary with any account and region
     // Account and region may be different from the pipeline's.
