@@ -11,7 +11,7 @@ class ApigwDemoStack extends cdk.Stack {
     super(scope, id, props);
 
     // First, create a test lambda
-    const myLambda = new lambda.Function(this, 'lambda', {
+    const handler = new lambda.Function(this, 'lambda', {
       code: lambda.Code.fromAsset(path.resolve(__dirname, 'lambda')),
       handler: 'index.handler',
       runtime: lambda.Runtime.NODEJS_12_X,
@@ -19,11 +19,16 @@ class ApigwDemoStack extends cdk.Stack {
     });
 
     // IMPORTANT: Lambda grant invoke to APIGateway
-    myLambda.grantInvoke(new ServicePrincipal('apigateway.amazonaws.com'));
+    handler.grantInvoke(new ServicePrincipal('apigateway.amazonaws.com'));
+
+    // const gw = new apigw.LambdaRestApi(this, 'Gateway', {
+    //   description: `Endpoint for lambda ${stageName}`,
+    //   handler,
+    // });
 
     // Then, create the API construct, integrate with lambda
     const api = new apigw.RestApi(this, 'my_api', { deploy: false });
-    const integration = new apigw.LambdaIntegration(myLambda);
+    const integration = new apigw.LambdaIntegration(handler);
     api.root.addMethod('ANY', integration);
 
     // Then create an explicit Deployment construct
@@ -33,7 +38,7 @@ class ApigwDemoStack extends cdk.Stack {
 
     api.deploymentStage = deployedStage;
 
-    this.urlOutput = new cdk.CfnOutput(this, 'url', { value: api.url });
+    this.urlOutput = new cdk.CfnOutput(this, `webservice-endpoint-${stageName}`, { value: api.url });
   }
 }
 
