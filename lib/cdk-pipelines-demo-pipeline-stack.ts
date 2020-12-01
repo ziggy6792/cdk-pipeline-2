@@ -1,4 +1,6 @@
 /* eslint-disable import/prefer-default-export */
+import * as cdk from '@aws-cdk/core';
+
 import { Stack, StackProps, Construct, SecretValue } from '@aws-cdk/core';
 import { CdkPipeline, SimpleSynthAction } from '@aws-cdk/pipelines';
 
@@ -8,6 +10,8 @@ import { ManualApprovalAction } from '@aws-cdk/aws-codepipeline-actions';
 import { CdkPipelinesDemoStage } from './cdk-pipelines-demo-stage';
 
 export class CdkpipelinesDemoPipelineStack extends Stack {
+  public readonly urlOutput: cdk.CfnOutput;
+
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
 
@@ -68,5 +72,7 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
         },
       })
     );
+    this.urlOutput = new cdk.CfnOutput(this, 'testOutput', { value: 'testOutput' });
+    // this.urlOutput = service.urlOutput;
   }
 }

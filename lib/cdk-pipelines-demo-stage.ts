@@ -5,6 +5,7 @@ import { CdkPipeline } from '@aws-cdk/pipelines';
 
 import * as cdk from '@aws-cdk/core';
 import { CdkPipelinesStack } from './cdk-pipelines-demo-stack';
+import ApigwDemoStack from './apigw-demo-stack';
 
 export class CdkPipelinesDemoStage extends Stage {
   public readonly urlOutput: cdk.CfnOutput;
@@ -12,7 +13,7 @@ export class CdkPipelinesDemoStage extends Stage {
   constructor(scope: Construct, id: string, props?: StageProps) {
     super(scope, id, props);
 
-    const service = new CdkPipelinesStack(this, 'webservice');
+    const service = new ApigwDemoStack(this, `webservice-${id}`);
 
     this.urlOutput = service.urlOutput;
   }
