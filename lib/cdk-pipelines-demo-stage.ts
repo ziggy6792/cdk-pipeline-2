@@ -8,13 +8,14 @@ import { CdkPipelinesStack } from './cdk-pipelines-demo-stack';
 import ApigwDemoStack from './apigw-demo-stack';
 
 export class CdkPipelinesDemoStage extends Stage {
-  public readonly urlOutput: cdk.CfnOutput;
+  // public readonly urlOutput: cdk.CfnOutput;
 
   constructor(scope: Construct, id: string, props?: StageProps) {
     super(scope, id, props);
 
-    const service = new ApigwDemoStack(this, `webservice-${id}`);
+    const service = new ApigwDemoStack(this, 'webservice', id);
 
-    this.urlOutput = service.urlOutput;
+    // this.urlOutput = service.urlOutput;
+    // this.urlOutput = new cdk.CfnOutput(this, `${stackName}-${id}`, { value: service.urlOutput });
   }
 }

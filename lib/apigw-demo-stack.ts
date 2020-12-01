@@ -7,10 +7,8 @@ import { ServicePrincipal } from '@aws-cdk/aws-iam';
 class ApigwDemoStack extends cdk.Stack {
   public readonly urlOutput: cdk.CfnOutput;
 
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+  constructor(scope: cdk.Construct, id: string, stageName: string, props?: cdk.StackProps) {
     super(scope, id, props);
-
-    const stage = id;
 
     // First, create a test lambda
     const myLambda = new lambda.Function(this, 'lambda', {
@@ -31,14 +29,11 @@ class ApigwDemoStack extends cdk.Stack {
     // Then create an explicit Deployment construct
     const deployment = new apigw.Deployment(this, 'my_deployment', { api });
 
-    // And different stages
-    // const [devStage, testStage, prodStage] = ['dev', 'test', 'prod'].map((item) => new apigw.Stage(this, `${item}_stage`, { deployment, stageName: item }));
-
-    const deployedStage = new apigw.Stage(this, `${stage}_stage`, { deployment, stageName: stage });
+    const deployedStage = new apigw.Stage(this, `${stageName}_stage`, { deployment, stageName });
 
     api.deploymentStage = deployedStage;
 
-    this.urlOutput = new cdk.CfnOutput(this, 'ApigwDemoStack', { value: 'ApigwDemoStack' });
+    this.urlOutput = new cdk.CfnOutput(this, `${id}-${stageName}`, { value: api.url, exportName: `${id}-${stageName}` });
   }
 }
 

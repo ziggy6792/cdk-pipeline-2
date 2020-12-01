@@ -1,7 +1,7 @@
 /* eslint-disable import/prefer-default-export */
 import * as cdk from '@aws-cdk/core';
 
-import { Stack, StackProps, Construct, SecretValue } from '@aws-cdk/core';
+import { Stack, StackProps, Construct, SecretValue, Fn } from '@aws-cdk/core';
 import { CdkPipeline, SimpleSynthAction } from '@aws-cdk/pipelines';
 
 import * as codepipeline from '@aws-cdk/aws-codepipeline';
@@ -10,7 +10,9 @@ import { ManualApprovalAction } from '@aws-cdk/aws-codepipeline-actions';
 import { CdkPipelinesDemoStage } from './cdk-pipelines-demo-stage';
 
 export class CdkpipelinesDemoPipelineStack extends Stack {
-  public readonly urlOutput: cdk.CfnOutput;
+  public readonly devUrlOutput: cdk.CfnOutput;
+
+  public readonly prodUrlOutput: cdk.CfnOutput;
 
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
@@ -44,14 +46,21 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
 
     // Do this as many times as necessary with any account and region
     // Account and region may be different from the pipeline's.
-    const devStage = pipeline.addApplicationStage(
-      new CdkPipelinesDemoStage(this, 'Dev', {
-        env: {
-          account: '694710432912',
-          region: 'ap-southeast-1',
-        },
-      })
-    );
+    const deployedDevStage = new CdkPipelinesDemoStage(this, 'Dev', {
+      env: {
+        account: '694710432912',
+        region: 'ap-southeast-1',
+      },
+    });
+
+    // this.devUrlOutput = new cdk.CfnOutput(this, 'webservice-dev', { value: deployedDevStage.urlOutput.importValue });
+
+    // if (deployedDevStage.urlOutput.exportName) {
+    //   this.devUrlOutput = new cdk.CfnOutput(this, deployedDevStage.urlOutput.exportName, { value: deployedDevStage.urlOutput.importValue });
+    // }
+    this.devUrlOutput = new cdk.CfnOutput(this, 'webservice-dev', { value: Fn.importValue('webservice-dev') });
+
+    const devStage = pipeline.addApplicationStage(deployedDevStage);
 
     // pipeline.
 
@@ -64,15 +73,21 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
 
     // Do this as many times as necessary with any account and region
     // Account and region may be different from the pipeline's.
-    pipeline.addApplicationStage(
-      new CdkPipelinesDemoStage(this, 'Prod', {
-        env: {
-          account: '694710432912',
-          region: 'ap-southeast-1',
-        },
-      })
-    );
-    this.urlOutput = new cdk.CfnOutput(this, 'testOutput', { value: 'testOutput' });
+
+    const deployedProdStage = new CdkPipelinesDemoStage(this, 'Prod', {
+      env: {
+        account: '694710432912',
+        region: 'ap-southeast-1',
+      },
+    });
+
+    pipeline.addApplicationStage(deployedProdStage);
+
+    // if (deployedProdStage.urlOutput.exportName) {
+    //   this.prodUrlOutput = new cdk.CfnOutput(this, deployedProdStage.urlOutput.exportName, { value: deployedProdStage.urlOutput.importValue });
+    // }
+    this.devUrlOutput = new cdk.CfnOutput(this, 'webservice-prod', { value: Fn.importValue('webservice-prod') });
+
     // this.urlOutput = service.urlOutput;
   }
 }
