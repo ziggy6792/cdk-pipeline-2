@@ -46,19 +46,20 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
 
     // Do this as many times as necessary with any account and region
     // Account and region may be different from the pipeline's.
-    const deployedDevStage = new CdkPipelinesDemoStage(this, 'Dev', {
+    const deployedDevStage = new CdkPipelinesDemoStage(this, 'dev', {
       env: {
         account: '694710432912',
         region: 'ap-southeast-1',
       },
     });
 
-    // this.devUrlOutput = new cdk.CfnOutput(this, 'webservice-dev', { value: deployedDevStage.urlOutput.importValue });
-
     // if (deployedDevStage.urlOutput.exportName) {
     //   this.devUrlOutput = new cdk.CfnOutput(this, deployedDevStage.urlOutput.exportName, { value: deployedDevStage.urlOutput.importValue });
     // }
-    this.devUrlOutput = new cdk.CfnOutput(this, 'webservice-dev', { value: Fn.importValue('webservice-dev') });
+
+    // this.devUrlOutput = new cdk.CfnOutput(this, 'webservice-dev-url', { value: Fn.importValue('webservice-dev') });
+
+    // Fn.importValue('webservice-dev');
 
     const devStage = pipeline.addApplicationStage(deployedDevStage);
 
@@ -74,7 +75,7 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
     // Do this as many times as necessary with any account and region
     // Account and region may be different from the pipeline's.
 
-    const deployedProdStage = new CdkPipelinesDemoStage(this, 'Prod', {
+    const deployedProdStage = new CdkPipelinesDemoStage(this, 'prod', {
       env: {
         account: '694710432912',
         region: 'ap-southeast-1',
@@ -86,7 +87,7 @@ export class CdkpipelinesDemoPipelineStack extends Stack {
     // if (deployedProdStage.urlOutput.exportName) {
     //   this.prodUrlOutput = new cdk.CfnOutput(this, deployedProdStage.urlOutput.exportName, { value: deployedProdStage.urlOutput.importValue });
     // }
-    this.devUrlOutput = new cdk.CfnOutput(this, 'webservice-prod', { value: Fn.importValue('webservice-prod') });
+    // this.devUrlOutput = new cdk.CfnOutput(this, 'webservice-prod', { value: Fn.importValue('webservice-prod') });
 
     // this.urlOutput = service.urlOutput;
   }

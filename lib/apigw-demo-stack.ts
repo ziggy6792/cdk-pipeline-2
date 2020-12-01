@@ -33,7 +33,7 @@ class ApigwDemoStack extends cdk.Stack {
 
     api.deploymentStage = deployedStage;
 
-    this.urlOutput = new cdk.CfnOutput(this, `${id}-${stageName}`, { value: api.url, exportName: `${id}-${stageName}` });
+    this.urlOutput = new cdk.CfnOutput(this, 'url', { value: api.url, exportName: 'url' });
   }
 }
 
