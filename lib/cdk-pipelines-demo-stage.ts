@@ -4,7 +4,7 @@ import * as codepipeline from '@aws-cdk/aws-codepipeline';
 import { CdkPipeline } from '@aws-cdk/pipelines';
 
 import * as cdk from '@aws-cdk/core';
-import { CdkPipelinesStack } from './cdk-pipeline-2-stack';
+import { CdkPipelinesStack } from './cdk-pipelines-demo-stack';
 
 export class CdkPipelinesDemoStage extends Stage {
   public readonly urlOutput: cdk.CfnOutput;
