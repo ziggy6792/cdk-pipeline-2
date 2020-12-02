@@ -11,17 +11,14 @@ class ApigwDemoStack extends cdk.Stack {
     super(scope, id, props);
 
     const baseId = `${id}-${stageName}`;
-
     const lambdaPair = { id: `${baseId}-lambda`, description: `${baseId}-lambda` };
     const apiPair = { id: `${baseId}-api`, description: `${baseId}-api` };
     const stagePair = { id: `${baseId}-stage`, description: `${baseId}-stage` };
-    const deploymentPair = { id: `${baseId}-deployment`, description: `${baseId}-deployment` };
+    const stageDeployment = { id: `${baseId}-deployment`, description: `${baseId}-deployment` };
 
     // First, create a test lambda
-    const handler = new lambda.Function(this, lambdaPair.id, {
+    const handler = new lambda.Function(this, 'lambda', {
       code: lambda.Code.fromAsset(path.resolve(__dirname, 'lambda')),
-      description: lambdaPair.description,
-      functionName: lambdaPair.description,
       handler: 'index.handler',
       runtime: lambda.Runtime.NODEJS_12_X,
       environment: {},
@@ -30,15 +27,15 @@ class ApigwDemoStack extends cdk.Stack {
     // IMPORTANT: Lambda grant invoke to APIGateway
     handler.grantInvoke(new ServicePrincipal('apigateway.amazonaws.com'));
 
-    const api = new apigw.LambdaRestApi(this, apiPair.id, {
-      description: apiPair.description,
-      handler,
-    });
+    // Then, create the API construct, integrate with lambda
+    const api = new apigw.RestApi(this, apiPair.id, { deploy: false });
+    const integration = new apigw.LambdaIntegration(handler);
+    api.root.addMethod('ANY', integration);
 
     // Then create an explicit Deployment construct
-    const deployment = new apigw.Deployment(this, deploymentPair.id, { api, description: deploymentPair.description });
+    const deployment = new apigw.Deployment(this, 'my_deployment', { api });
 
-    const deployedStage = new apigw.Stage(this, stagePair.id, { deployment, stageName, description: stagePair.description });
+    const deployedStage = new apigw.Stage(this, `${stageName}_stage`, { deployment, stageName });
 
     api.deploymentStage = deployedStage;
 
