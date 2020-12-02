@@ -37,7 +37,7 @@ class ApigwDemoStack extends cdk.Stack {
     // Then create an explicit Deployment construct
     const deployment = new apigw.Deployment(this, 'my_deployment', { api });
 
-    const deployedStage = new apigw.Stage(this, `${stageName}_stage`, { deployment, stageName });
+    const deployedStage = new apigw.Stage(this, stagePair.id, { deployment, stageName, description: stagePair.description });
 
     api.deploymentStage = deployedStage;
 
