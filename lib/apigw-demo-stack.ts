@@ -17,8 +17,10 @@ class ApigwDemoStack extends cdk.Stack {
     const stageDeployment = { id: `${baseId}-deployment`, description: `${baseId}-deployment` };
 
     // First, create a test lambda
-    const handler = new lambda.Function(this, 'lambda', {
+    const handler = new lambda.Function(this, lambdaPair.id, {
       code: lambda.Code.fromAsset(path.resolve(__dirname, 'lambda')),
+      description: lambdaPair.description,
+      functionName: lambdaPair.description,
       handler: 'index.handler',
       runtime: lambda.Runtime.NODEJS_12_X,
       environment: {},
@@ -28,7 +30,7 @@ class ApigwDemoStack extends cdk.Stack {
     handler.grantInvoke(new ServicePrincipal('apigateway.amazonaws.com'));
 
     // Then, create the API construct, integrate with lambda
-    const api = new apigw.RestApi(this, apiPair.id, { deploy: false });
+    const api = new apigw.RestApi(this, apiPair.id, { deploy: false, description: apiPair.description });
     const integration = new apigw.LambdaIntegration(handler);
     api.root.addMethod('ANY', integration);
 
